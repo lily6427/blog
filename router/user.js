@@ -17,4 +17,7 @@ router.post('/register', control.regist);
 // 登录界面
 router.post('/login', control.login);
 
+// 登出界面
+router.get('/logout', control.logout);
+
 module.exports = router;

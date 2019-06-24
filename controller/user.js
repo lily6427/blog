@@ -1,16 +1,8 @@
 const moment = require("moment");
 
-// 连接数据库
-const mysql = require("mysql");
-var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'mysql_001'
-});
 
-connection.connect();
-
+// 导入数据库模块
+const connection = require("../db/index.js");
 
 // 注册页面
 const showRegisterPage = (req, res) => {
@@ -77,17 +69,31 @@ const login = (req, res) => {
 
         if (result.length != 1) return res.send({ msg: "用户名不存在", status: 502 });
 
+        // 将私有数据保存到当前请求的session会话中：
+        req.session.user = body;
+        req.session.isLogin = true;
+
         res.send({ msg: "ok", status: 200 });
 
     });
 };
 
+// 登出接口
+const logout = (req, res) => {
+
+    req.session.destroy(function(err) {
+        if (err) throw err;
+        console.log('用户退出成功！');
+        // 实现服务器端的跳转，这个对比于 客户端跳转 重定向首页
+        res.redirect('/');
+    });
+}
+
 // 暴露模块
 module.exports = {
-
     showRegisterPage,
     showLoginPage,
     regist,
-    login
-
+    login,
+    logout
 }

@@ -1,9 +1,18 @@
 const express = require('express');
 const fs = require("fs");
 const path = require("path");
+const session = require("express-session");
 
 // 创建服务器
 const app = express();
+
+// 启用 session 中间件 只要注册了中间件，只要有req的地方都能拿到req.session
+app.use(session({
+    secret: 'keyboard cat', // 相当于是一个加密密钥，值可以是任意字符串
+    resave: false, // 强制session保存到session store中
+    saveUninitialized: false // 强制没有“初始化”的session保存到storage中
+}));
+
 var bodyParser = require('body-parser');
 
 // parse application/x-www-form-urlencoded
@@ -38,7 +47,6 @@ fs.readdir(path.join(__dirname, './router'), (err, filenames) => {
     })
 
 })
-
 
 // 开启服务器
 app.listen(3000, () => {
